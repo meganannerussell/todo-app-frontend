@@ -1,14 +1,15 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect } from "react";
 import EditTodo from "./EditTodo";
 import "semantic-ui-css/semantic.min.css";
-import { table, Button } from "semantic-ui-react";
+import { table, Button, Icon } from "semantic-ui-react";
+import { getTodos } from "./actions";
+import "./ListTodo.css"
+import { apiBaseUrl } from "../App";
 
-const ListTodos = () => {
-  const [todos, setTodos] = useState([]);
-
+const ListTodos = ({ todos, setTodos }) => {
   const deleteTodo = async (id) => {
     try {
-      await fetch(`http://localhost:5000/todos/${id}`, {
+      await fetch(`${apiBaseUrl}/todos/${id}`, {
         method: "DELETE",
       });
 
@@ -18,48 +19,67 @@ const ListTodos = () => {
     }
   };
 
-  const getTodos = async () => {
-    try {
-      const response = await fetch("http://localhost:5000/todos");
-      const jsonData = await response.json();
-
-      setTodos(jsonData);
-    } catch (e) {
-      console.log(e);
-    }
+  const fetchTodos = async () => {
+    const fetchedTodos = await getTodos();
+    setTodos(fetchedTodos);
   };
 
   useEffect(() => {
-    getTodos();
+    fetchTodos();
   }, []);
 
+  const checkTodo = async (todo) => {
+    const response = await fetch(
+      `${apiBaseUrl}/todos/${todo.todo_id}/check`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ checked: !todo.checked }),
+      }
+    );
+    await fetchTodos();
+  };
+
   return (
-    <div style={{ textAlign: "center", width: "50%", margin: "auto" }}>
+    <div style={{ textAlign: "center", width: "80%", margin: "auto" }}>
       <Fragment>
         <h1 style={{ marginTop: 40 }}>Todo List</h1>
         <div>
-          <table class="ui very basic table">
-            <thead>
-              <tr>
-                <th>Description</th>
-                <th>Edit</th>
-                <th>Delete</th>
-              </tr>
-            </thead>
+          <table style={{width:"100%"}} class="ui very basic table">
             <tbody>
-              {todos.map((todo) => (
-                <tr key={todo.todo_id}>
-                  <td style={{ text: "black" }}>{todo.description}</td>
-                  <td>
-                    <EditTodo todo={todo} />
-                  </td>
-                  <td>
-                    <Button onClick={() => deleteTodo(todo.todo_id)}>
-                      Delete
-                    </Button>
-                  </td>
-                </tr>
-              ))}
+              {todos.map((todo) => {
+                return (
+                  <tr className="columns" key={todo.todo_id}>
+                    <td>
+                      {" "}
+                      <label className="checkbox-label">
+                        <input
+                          type="checkbox"
+                          defaultChecked={!!todo.checked}
+                          onChange={() => checkTodo(todo)}
+                        />
+                      </label>
+                    </td>
+                    {!todo.checked ? (
+                      <td style={{ text: "black" }}>{todo.description}</td>
+                    ) : (
+                      <td style={{ textDecoration: "line-through" }}>
+                        {todo.description}
+                      </td>
+                    )}
+                    <td style={{ width: 20 }}>
+                      <EditTodo todo={todo} setTodos={setTodos} />
+                    </td>
+                    <td style={{ width: 20 }}>
+                      <Button
+                        style={{ backgroundColor: "white", color: "#B22D3D" }}
+                        icon="trash"
+                        onClick={() => deleteTodo(todo.todo_id)}
+                      />
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

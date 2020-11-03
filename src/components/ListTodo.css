@@ -1,0 +1,22 @@
+
+
+@media only screen and (max-width: 767px) {
+    .columns {
+      display: flex;
+      flex-direction: row;
+      display: inline-block!important;
+    }
+    .ui.table:not(.unstackable) tr {
+        display: flex!important;
+      flex-direction: row!important;
+        display: inline-block!important;
+    }
+  }
+
+  @media only screen and (max-width: 767px){
+    columns.ui.table:not(.unstackable) tr {
+        display: flex!important;
+        flex-direction: row!important;
+        /* display: inline-block!important; */
+    }
+  }

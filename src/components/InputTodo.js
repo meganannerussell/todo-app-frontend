@@ -1,23 +1,28 @@
 import React, { Fragment, useState } from "react";
 import "semantic-ui-css/semantic.min.css";
 import { Input, Button } from "semantic-ui-react";
+import { getTodos } from "./actions";
+import { apiBaseUrl } from "../App";
 
-const InputTodo = () => {
+const InputTodo = ({ setTodos }) => {
   const [description, setDescription] = useState("");
 
   const onSubmitForm = async (e) => {
     e.preventDefault();
-    try {
-      const body = { description };
-      await fetch("http://localhost:5000/todos", {
-        method: "POST",
-        headers: { "content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
-
-      window.location = "/";
-    } catch (e) {
-      console.log(e);
+    if (description !== "") {
+      try {
+        const body = { description };
+        await fetch(`${apiBaseUrl}/todos`, {
+          method: "POST",
+          headers: { "content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+        const fetchedTodos = await getTodos();
+        setTodos(fetchedTodos);
+        setDescription('')
+      } catch (e) {
+        console.log(e);
+      }
     }
   };
 
@@ -27,11 +32,11 @@ const InputTodo = () => {
 
   return (
     <Fragment>
-      <h1 style={{ textAlign: "center", marginTop: 60 }}>What todo</h1>
+      <h1 style={{ textAlign: "center", marginTop: 40 }}>What todo</h1>
       <form onSubmit={onSubmitForm}>
         <div style={{ textAlign: "center" }}>
           <Input
-            style={{ width: "50%" }}
+            style={{ width: "60%", paddingBottom: 50 }}
             type="text"
             value={description}
             onChange={handleInput}
