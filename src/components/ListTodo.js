@@ -47,11 +47,10 @@ const ListTodos = ({ todos, setTodos }) => {
         <div>
           <table style={{width:"100%"}} class="ui very basic table">
             <tbody>
-              {todos.map((todo) => {
+              { todos && todos.map((todo) => {
                 return (
                   <tr className="columns" key={todo.todo_id}>
                     <td>
-                      {" "}
                       <label className="checkbox-label">
                         <input
                           type="checkbox"

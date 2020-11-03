@@ -21,7 +21,7 @@ const InputTodo = ({ setTodos }) => {
         setTodos(fetchedTodos);
         setDescription('')
       } catch (e) {
-        console.log(e);
+        console.log(e, "this is an error");
       }
     }
   };

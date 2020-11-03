@@ -11,11 +11,11 @@ export const apiBaseUrl = env.REACT_APP_API_URL || "http://localhost:5000";
 
 function App() {
   const [todos, setTodos] = useState([
-    { description: "wash my car", checked: false },
-    {
-      description: "do work",
-      checked: false,
-    },
+    // { description: "wash my car", checked: false },
+    // {
+    //   description: "do work",
+    //   checked: false,
+    // },
   ]);
 
   return (
